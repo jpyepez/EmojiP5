@@ -6,17 +6,14 @@ const state = {};
 
 (async () => {
 
-    console.log("EmojiPacker started!");
-
     state.emojis = new EmojiData();
-    state.stream = {};
 
     try {
         await state.emojis.getData();
         state.emojis.getLast100();
 
         // Create sketch
-        const myp5 = sketch(state.emojis.last100, state.stream);
+        const myp5 = sketch(state.emojis.last100);
         new p5(myp5, 'p5sketch');
 
     } catch(error) {
@@ -26,9 +23,19 @@ const state = {};
     // get stream and update emoji data
     const endpoint = "https://stream.emojitracker.com";
     const evsource = new EventSource(`${endpoint}/subscribe/eps`);
+
     evsource.onmessage = (event) => {
         const updates = JSON.parse(event.data);
-        state.stream.update(updates);
+
+        // find key in 'last100' and update
+        for (const [k, v] of Object.entries(updates)) {
+            state.emojis.last100.forEach(emoji => {
+                if(emoji.id === k) {
+                    emoji.score += v;
+                    // console.log(`Emoji ${emoji.char} increased by ${v}.`);
+                }
+            })
+        }
     }
 
 })();
