@@ -2,18 +2,12 @@ import p5 from 'p5';
 import 'p5/lib/addons/p5.sound';
 import 'p5/lib/addons/p5.dom';
 import EmojiSys from './classes/EmojiSys';
+import { getScoreLimits } from './base';
 
-const getScoreLimits = (data) => {
-    const minScore = data.reduce((min, emoji) =>
-        emoji.score < min ? emoji.score : min, data[0].score);
+export default (emojiData, streamData) => {
 
-    const maxScore = data.reduce((max, emoji) =>
-        emoji.score > max ? emoji.score : max, data[0].score);
-
-    return { minScore, maxScore };
-}
-
-export default (emojiData) => {
+    // TODO Refactor to avoid copying emoji data, and to refer to the original one,
+    // which gets updated with stream. Possibly can get rid of stream as 2nd arg.
 
     return (p5) => {
 
@@ -55,6 +49,13 @@ export default (emojiData) => {
 
         p5.windowResized = () => {
             p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+        }
+
+        // add update function to state.stream
+        streamData.update = (data) => {
+            for(const [k, v] of Object.entries(data)) {
+                console.log( k, v);
+            }
         }
     }
 }
