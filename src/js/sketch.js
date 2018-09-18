@@ -6,10 +6,10 @@ import { getScoreLimits } from './base';
 
 export default (emojiData) => {
 
+    // TODO: Apply palette
     // TODO: Canvas full rescale on window resize
-    // TODO: emojiCircle changed interpolation
     // TODO: Style canvas
-    // TODO: Endangered emojis
+    // TODO: Top emojis
 
     return (p5) => {
 

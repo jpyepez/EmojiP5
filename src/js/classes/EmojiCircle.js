@@ -9,9 +9,10 @@ export default class EmojiCircle {
         let randY = 100 + Math.random()*(p5.height - 200);
         this.loc = p5.createVector(randX, randY);
 
-        this.maxRadius = 50.0;
-        this.changeOffset = 0.;
-        this.setRadius();
+        this.maxArea = 10000.0;
+        this.areaOffset = 0.;
+        this.offsetRate = 1.;
+        this.setArea(0.4, 1.);
         this.noiseInit = 100*Math.random();
 
         this.velMag = p5.map(Math.random(), 0, 1, 0.05, 0.25);
@@ -19,13 +20,16 @@ export default class EmojiCircle {
         let y = p5.map(Math.random(), 0, 1, -1, 1);
         this.vel = p5.createVector(x, y).setMag(this.velMag);
 
-        this.hue = 200;
+        this.circles = 5;
+        this.oHue = 200;
+        this.hue = this.oHue;
         this.hl = 160;
+        this.hasChanged = false;
     }
 
     update() {
         this.checkScoreChange();
-        this.setRadius();
+        this.setArea(0.4, 1.);
 
         this.loc.add(this.vel);
         this.checkEdges();
@@ -33,8 +37,11 @@ export default class EmojiCircle {
 
     display() {
         p5.noStroke();
-        p5.fill(p5.color(this.hue, 60, 90, 0.45));
-        p5.ellipse(this.loc.x, this.loc.y, this.radius*2);
+        for(let i = 0; i < this.circles; i++) {
+            p5.fill(p5.color(p5.lerp(this.hue, this.hue+100, 1./this.circles), 60, 90, 0.15));
+            p5.ellipse(this.loc.x, this.loc.y, i*this.radius*2/this.circles);
+
+        }
         this.showEmoji();
     }
 
@@ -45,37 +52,40 @@ export default class EmojiCircle {
     }
 
     checkEdges() {
-        this.loc.x = this.loc.x > p5.width ? 0 : this.loc.x;
-        this.loc.x = this.loc.x < 0 ? p5.width : this.loc.x;
-        this.loc.y = this.loc.y > p5.height ? 0 : this.loc.y;
-        this.loc.y = this.loc.y < 0 ? p5.height : this.loc.y;
-    }
-
-    normalizeScore(current, min, max) {
-        return p5.map(current, min, max, 0.2, 1.);
+        this.loc.x = this.loc.x > p5.width + this.radius ? -this.radius : this.loc.x;
+        this.loc.x = this.loc.x < -this.radius ? p5.width + this.radius : this.loc.x;
+        this.loc.y = this.loc.y > p5.height + this.radius ? -this.radius : this.loc.y;
+        this.loc.y = this.loc.y < -this.radius ? p5.height + this.radius : this.loc.y;
     }
 
     highlight(time) {
         this.hue = this.hl;
-        this.changeOffset = 10;
+        this.hasChanged = true;
         setTimeout(() => { 
-            this.hue = 200;
-            this.changeOffset = 0;
-        }, 1000);
+            this.hue = this.oHue;
+            this.areaOffset = 0;
+            this.hasChanged = false;
+        }, time);
     }
 
     checkScoreChange() {
+        // highlight if changed
         if(this.emoji.score !== this.cachedScore) {
-            this.highlight(100);
+            this.highlight(500);
             this.cachedScore = this.emoji.score;
         }
+        
+        // grow if recently changed
+        if(this.hasChanged) this.areaOffset += this.offsetRate;
     }
 
-    setRadius() {
-        this.radius = this.normalizeScore(this.emoji.score,
+    setArea(minScl, maxScl) {
+        this.radius = p5.map(this.emoji.score,
             this.limits.minScore,
             this.limits.maxScore,
-            0.2,
-            1.) * this.maxRadius + this.changeOffset;
+            minScl,
+            maxScl) * p5.sqrt(this.maxArea/Math.PI) + this.areaOffset;
     }
+
+
 }

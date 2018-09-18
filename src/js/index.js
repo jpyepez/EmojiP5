@@ -10,10 +10,12 @@ const state = {};
 
     try {
         await state.emojis.getData();
-        state.emojis.getLast100();
+        // state.emojis.getLast100();
+        state.emojis.getTop100();
 
         // Create sketch
-        const myp5 = sketch(state.emojis.last100);
+        // const myp5 = sketch(state.emojis.last100);
+        const myp5 = sketch(state.emojis.top100);
         new p5(myp5, 'p5sketch');
 
     } catch(error) {
@@ -29,7 +31,13 @@ const state = {};
 
         // find key in 'last100' and update
         for (const [k, v] of Object.entries(updates)) {
-            state.emojis.last100.forEach(emoji => {
+            // state.emojis.last100.forEach(emoji => {
+            //     if(emoji.id === k) {
+            //         emoji.score += v;
+            //         // console.log(`Emoji ${emoji.char} increased by ${v}.`);
+            //     }
+            // })
+            state.emojis.top100.forEach(emoji => {
                 if(emoji.id === k) {
                     emoji.score += v;
                     // console.log(`Emoji ${emoji.char} increased by ${v}.`);
