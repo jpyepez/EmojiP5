@@ -6,9 +6,7 @@ import { getScoreLimits } from './base';
 
 export default (emojiData) => {
 
-    // TODO: Apply palette
     // TODO: Canvas full rescale on window resize
-    // TODO: Style canvas
     // TODO: Top emojis
 
     return (p5) => {
@@ -20,10 +18,13 @@ export default (emojiData) => {
         let minMax;     // track min/max limits
         let bg;
 
+        const parent = document.getElementById('p5sketch');
+
         p5.setup = () => {
-            p5.createCanvas(p5.windowWidth, p5.windowHeight);
+            p5.createCanvas(parent.offsetWidth, parent.offsetHeight);
+            p5.pixelDensity(1);
             p5.colorMode(p5.HSB);
-            bg = p5.color(90);
+            bg = p5.color(230, 95, 23);
             p5.background(bg);
 
             // Emoji data received
@@ -49,7 +50,7 @@ export default (emojiData) => {
         }
 
         p5.windowResized = () => {
-            p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+            p5.resizeCanvas(parent.offsetWidth, parent.offsetHeight);
         }
     }
 }

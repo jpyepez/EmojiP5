@@ -5,13 +5,13 @@ export default class EmojiCircle {
         this.limits = limits;
         this.cachedScore = this.emoji.score;
 
-        let randX = 100 + Math.random()*(p5.width - 200);
-        let randY = 100 + Math.random()*(p5.height - 200);
+        let randX = Math.random()*p5.width;
+        let randY = Math.random()*p5.height;
         this.loc = p5.createVector(randX, randY);
 
         this.maxArea = 10000.0;
         this.areaOffset = 0.;
-        this.offsetRate = 1.;
+        this.offsetRate = 0.5;
         this.setArea(0.4, 1.);
         this.noiseInit = 100*Math.random();
 
@@ -21,9 +21,10 @@ export default class EmojiCircle {
         this.vel = p5.createVector(x, y).setMag(this.velMag);
 
         this.circles = 5;
-        this.oHue = 200;
-        this.hue = this.oHue;
-        this.hl = 160;
+        this.c1 = p5.color(198, 95, 100, 0.25);
+        this.c2 = p5.color(182, 95, 100, 0.25);
+        this.hl = p5.color(95, 95, 100, 0.25);
+        this.current = this.c1;
         this.hasChanged = false;
     }
 
@@ -38,7 +39,7 @@ export default class EmojiCircle {
     display() {
         p5.noStroke();
         for(let i = 0; i < this.circles; i++) {
-            p5.fill(p5.color(p5.lerp(this.hue, this.hue+100, 1./this.circles), 60, 90, 0.15));
+            p5.fill(p5.lerpColor(this.current, this.c2, i/this.circles));
             p5.ellipse(this.loc.x, this.loc.y, i*this.radius*2/this.circles);
 
         }
@@ -59,10 +60,10 @@ export default class EmojiCircle {
     }
 
     highlight(time) {
-        this.hue = this.hl;
+        this.current = this.hl;
         this.hasChanged = true;
         setTimeout(() => { 
-            this.hue = this.oHue;
+            this.current = this.c1;
             this.areaOffset = 0;
             this.hasChanged = false;
         }, time);
@@ -86,6 +87,4 @@ export default class EmojiCircle {
             minScl,
             maxScl) * p5.sqrt(this.maxArea/Math.PI) + this.areaOffset;
     }
-
-
 }
