@@ -7,8 +7,8 @@ import img from '../assets/output.png';
 
 export default (emojiData) => {
 
-    // TODO: Canvas full rescale on window resize
-    // TODO: Top emojis
+    // TODO: Nav flex
+    // TODO: Emoji responsive size
 
     return (p5) => {
 
