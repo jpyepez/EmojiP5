@@ -3,6 +3,7 @@ import 'p5/lib/addons/p5.sound';
 import 'p5/lib/addons/p5.dom';
 import EmojiSys from './classes/EmojiSys';
 import { getScoreLimits } from './base';
+import img from '../assets/output.png';
 
 export default (emojiData) => {
 
@@ -20,11 +21,16 @@ export default (emojiData) => {
 
         const parent = document.getElementById('p5sketch');
 
+        p5.preload = () => {
+            bg = p5.loadImage(img);
+        }
+
         p5.setup = () => {
             p5.createCanvas(parent.offsetWidth, parent.offsetHeight);
             p5.pixelDensity(1);
             p5.colorMode(p5.HSB);
-            bg = p5.color(230, 95, 23);
+
+            // bg = p5.color(230, 95, 23);
             p5.background(bg);
 
             // Emoji data received
@@ -51,6 +57,7 @@ export default (emojiData) => {
 
         p5.windowResized = () => {
             p5.resizeCanvas(parent.offsetWidth, parent.offsetHeight);
+            emojiSys.resizeEmojiLocations();
         }
     }
 }

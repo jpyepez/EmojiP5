@@ -1,6 +1,7 @@
 import p5 from 'p5';
 import sketch from './sketch';
 import EmojiData from './classes/EmojiData';
+import './../styles/styles.css';
 
 const state = {};
 
