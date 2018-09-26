@@ -9,10 +9,10 @@ export default class EmojiCircle {
         let randY = Math.random()*p5.height;
         this.loc = p5.createVector(randX, randY);
 
-        this.maxArea = 10000.0;
+        this.setMaxArea();
         this.areaOffset = 0.;
         this.offsetRate = 0.5;
-        this.setArea(0.4, 1.);
+        this.setArea();
         this.noiseInit = 100*Math.random();
 
         this.velMag = p5.map(Math.random(), 0, 1, 0.05, 0.25);
@@ -20,7 +20,7 @@ export default class EmojiCircle {
         let y = p5.map(Math.random(), 0, 1, -1, 1);
         this.vel = p5.createVector(x, y).setMag(this.velMag);
 
-        this.circles = 5;
+        this.circles = 4;
         this.c1 = p5.color(198, 95, 100, 0.25);
         this.c2 = p5.color(182, 95, 100, 0.25);
         this.hl = p5.color(95, 95, 100, 0.25);
@@ -30,7 +30,7 @@ export default class EmojiCircle {
 
     update() {
         this.checkScoreChange();
-        this.setArea(0.4, 1.);
+        this.setArea();
 
         this.loc.add(this.vel);
         this.checkEdges();
@@ -80,11 +80,15 @@ export default class EmojiCircle {
         if(this.hasChanged) this.areaOffset += this.offsetRate;
     }
 
-    setArea(minScl, maxScl) {
+    setArea() {
         this.radius = p5.map(this.emoji.score,
             this.limits.minScore,
             this.limits.maxScore,
-            minScl,
-            maxScl) * p5.sqrt(this.maxArea/Math.PI) + this.areaOffset;
+            0.4,
+            1.) * p5.sqrt(this.maxArea/Math.PI) + this.areaOffset;
+    }
+
+    setMaxArea() {
+        this.maxArea = 0.015*p5.width*p5.height;
     }
 }

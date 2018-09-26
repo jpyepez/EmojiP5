@@ -7,9 +7,6 @@ import img from '../assets/output.png';
 
 export default (emojiData) => {
 
-    // TODO: Nav flex
-    // TODO: Emoji responsive size
-
     return (p5) => {
 
         // Make 'p5' global
